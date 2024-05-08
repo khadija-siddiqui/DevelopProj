@@ -4,4 +4,18 @@
 //   GET, POST, DELETE
 // GET -- fetches all notes from database
 // POST -- creates new note & saves it to database
-// DELETE -- deletes note by its ID from the database... check with TAs if needed?
+// PATCH -- adjusts existing note
+// DELETE -- deletes note by its ID from the database
+const express = require('express');
+const router = express.Router();
+const Note = require('../model/Note');
+
+//GET all notes
+router.get('/', async(req, res) => {
+
+}); 
+
+//POST a new note
+
+
+//DELETE a note

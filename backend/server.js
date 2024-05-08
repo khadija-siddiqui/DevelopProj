@@ -4,34 +4,42 @@
 //defining routes for handling API endpts related to notes
 //starts server to listen to incoming requests
 
-const express = require('express')
-const mongoose = require('mongoose')
-const app = express();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+dotenv.config();
 
-const PORT = process.env.PORT || 5000;
-//uri to connect to mongoDB
-const uri = //link from mongodb - adjust <password> to be password for database user
+const app = express();
 
 //function to connect to mongoDB
 async function connect() {
     try {
-        await mongoose.connect(uri)
+         await mongoose.connect(process.env.MONGO_DB_URI);
         console.log("Connected to MongoDB");
     } catch (error){
-        console.error("MongoDB connection error: ", error);
+        console.error("MongoDB connection ERROR: ", error);
         process.exit(1); //unable to connect - exit 
     }
 }
 
 connect();
 
+//middleware
+app.use(cors());
+app.use(express.json());
+
 //defining routes for handling API endpts related to notes
 const noteRouter = require('./routes/notes');
 app.use('/notes', noteRouter);
 
+app.get('/', (req, res) => {
+    res.json({ message: 'API works' });
+});
 
 //start server
+const PORT = 8000;
 app.listen(PORT, () => {
-    console.log("Server started on port ${PORT}`");
+    console.log("Server started on port 8000");
 });
 
