@@ -1,11 +1,11 @@
 //defining Express routes to handle CRUF operations on notes
 //importing Note model to interact w/ MongoDB database
 //routes:
-//   GET, POST, DELETE
+//   GET, POST, DELETE, PATCH
 // GET -- fetches all notes from database
 // POST -- creates new note & saves it to database
-// PATCH -- adjusts existing note
 // DELETE -- deletes note by its ID from the database
+// PATCH -- adjusts existing note in the database 
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -46,5 +46,18 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({message: err.message});
     }
 });
+
+//PATCH - edit a note
+//PATCH an existing note
+router.patch('/:id', async (req, res) => {
+    try {
+        const updateNote = await Note.updateOne({ _id: req.params.id }, { $set: req.body });
+        console.log(updateNote);
+        res.status(200).json(updateNote);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 
 module.exports = router;
