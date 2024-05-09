@@ -27,7 +27,7 @@ connect();
 
 //middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); //telling app to read json file since by default it uses html file
 
 //defining routes for handling API endpts related to notes
 const noteRouter = require('./routes/notes');

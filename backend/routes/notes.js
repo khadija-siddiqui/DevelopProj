@@ -40,10 +40,8 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const deleteNote = await Note.deleteOne({ _id: req.params.id});
-        if(deleteNote.deletedCount === 0) {
-            return res.status(404).json({message: "Note not found"});
-        }
-        res.json({message: 'Note deleted'});
+        console.log(deleteNote);
+        res.status(200).json(deleteNote);
     } catch (err) {
         res.status(500).json({message: err.message});
     }
