@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-//5. Create a Note.jsx component to show a <div> element with a
-//<h1> for a title and a <p> for the content.
 
 function Note(props) {
   const [isEdit, setEdit] = useState(false);
   const [editTitle, setEditTitle] = useState(props.title);
-  cosnt [editContent, setEditContent] = useStat(props.content);
+  const [editContent, setEditContent] = useState(props.content); // Fixed typo: 'cosnt' to 'const'
 
-  function handleEditClick(){
+  function handleEditClick() {
     setEdit(true);
   }
 
-  function handleSaveClick(){
+  function handleSaveClick() {
     props.onEdit(props.id, editTitle, editContent);
     setEdit(false);
   }
@@ -20,14 +18,13 @@ function Note(props) {
     setEditTitle(event.target.value);
   }
 
-  function handleContentChange(event){
+  function handleContentChange(event) {
     setEditContent(event.target.value);
   }
 
   function handleDeleteClick() {
     props.onDelete(props.id);
   }
-
 
   return (
     <div className="note">
@@ -57,3 +54,4 @@ function Note(props) {
 }
 
 export default Note;
+

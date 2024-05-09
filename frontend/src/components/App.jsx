@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
+import axios from "axios";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
@@ -19,45 +20,71 @@ import NotesComp from "./NotesComp";
 function App() {
   //state hook to track list of notes
   const [notesList, setNList] = useState(notes);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
-  //add functionality for note
-  function addNote(newNote) {
-    //const trackcontent = {
-    //title: title,
-    //content: content,
-    //};
-    setNList((prevN) => prevN.concat(newNote));
-  }
+  useEffect(() => {
+    axios
+    .get("http://localhost:8000/notes")
+    .then((res) => {
+      console.log(res.data);
+      setNList(res.data);
+    })
+    .catch((err) => console.error(err));
+  }, []);
 
-  //delete functionality for note
-  //filter func - filter out what needs to be deleted
-  function delNote(id) {
-    setNList((prevN) => {
-      return prevN.filter((note, index) => index !== id);
-    });
-  }
 
-  //edit functionality for note 
-  function editNote(id, editedTitle, editedContent){
-    setNList((prevN) => 
-      prevN.map((note, index) => {
-        if (index === id) {
-          return {...note, title: editedTitle, content: editedContent};
-        }
-        return note;
+  const addNote = () => {
+    axios
+      .post("http://localhost:8000/notes", { title, content })
+      .then((res) => {
+        console.log("Note added - ", res.data);
+        setNList([...notesList, res.data]);
+        setTitle("");
+        setContent("");
       })
-    );
-  }
+      .catch((err) => console.log(err));
+  };
+
+
+  const updateNote = (id, updatedTitle, updatedContent) => {
+    axios
+      .patch(`http://localhost:8000/notes/${id}`, {
+          title: updatedTitle,
+          content: updatedContent,
+        })
+      .then((res) => {
+        console.log(res.data);
+        const updatedNotes = notesList.map((note) =>
+          note._id === id
+            ? { ...note, title: updatedTitle, content: updatedContent }
+            : note
+        );
+        setNList(updatedNotes);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const deleteNote = (id) => {
+    axios
+      .delete(`http://localhost:8000/notes/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        setNList(notesList.filter((note) => note._id !== id));
+      })
+      .catch((err) => console.log(err));
+  };
+
 
   const renderNotes = () => {
-    return notesList.map((note, index) => (
+    return notesList && notesList.map((note) => (
       <Note
-        key={index}
-        id={index}
+        key={note._id}
+        id={note._id}
         title={note.title}
         content={note.content}
-        onEdit={editNote}
-        onDelete={delNote}
+        onDelete={() => deleteNote(note._id)}
+        onEdit={updateNote}
       />
     ));
   };
@@ -65,8 +92,35 @@ function App() {
   return (
     <div>
       <Header />
-      <NotesComp onAdd={addNote} />
-      {renderNotes()}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addNote();
+        }}
+        className="form"
+      >
+        <input
+          className="block shadow w-full mx-auto px-2 py-2 my-2 rounded-lg"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          type="text"
+          placeholder="Title"
+        />
+        <textarea
+          placeholder="Write your note here..."
+          rows={4}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+          type="text"
+          className="block shadow w-full mx-auto my-2 px-2 py-4 rounded-lg"
+        />
+        <button type="submit" className="button">
+          +
+        </button>
+      </form>
+      <div className="grid-container">{renderNotes()}</div>
       <Footer />
     </div>
   );
