@@ -37,6 +37,18 @@ function App() {
     });
   }
 
+  //edit functionality for note 
+  function editNote(id, editedTitle, editedContent){
+    setNList((prevN) => 
+      prevN.map((note, index) => {
+        if (index === id) {
+          return {...note, title: editedTitle, content: editedContent};
+        }
+        return note;
+      })
+    );
+  }
+
   const renderNotes = () => {
     return notesList.map((note, index) => (
       <Note
@@ -44,6 +56,7 @@ function App() {
         id={index}
         title={note.title}
         content={note.content}
+        onEdit={editNote}
         onDelete={delNote}
       />
     ));
