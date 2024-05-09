@@ -1,5 +1,8 @@
 # Full Stack Note Taking Application
 
+## Deployed Vercel Link: 
+https://develop-proj-f432tny2o-khadija-siddiquis-projects.vercel.app/
+
 ## Steps to Run the Application
 
 ### Backend
